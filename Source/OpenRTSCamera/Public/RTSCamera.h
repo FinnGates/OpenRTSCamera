@@ -59,6 +59,8 @@ public:
 	float ZoomCatchupSpeed;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Zoom Settings")
 	float ZoomSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Zoom Settings")
+	float MinimumZoomedSpeed;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
 	float StartingYAngle;
@@ -66,9 +68,18 @@ public:
 	float StartingZAngle;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
-	float MoveSpeed;
+	float FinishingYAngle;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
-	float RotateSpeed;
+	float FinishingZAngle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
+	float MinimumMoveSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
+	float MaximumMoveSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
+	float MinimumRotateSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera")
+	float MaximumRotateSpeed;
 	
 	/**
 	 * Controls how fast the drag will move the camera.
@@ -110,13 +121,6 @@ public:
 		Category = "RTSCamera - Edge Scroll Settings",
 		meta=(EditCondition="EnableEdgeScrolling")
 	)
-	float EdgeScrollSpeed;
-	UPROPERTY(
-		BlueprintReadWrite,
-		EditAnywhere,
-		Category = "RTSCamera - Edge Scroll Settings",
-		meta=(EditCondition="EnableEdgeScrolling")
-	)
 	float DistanceFromEdgeThreshold;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
@@ -135,16 +139,31 @@ public:
 	UInputAction* DragCamera;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
 	UInputAction* ZoomCamera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
+	UInputAction* MaxZoomCamera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
+	UInputAction* MinZoomCamera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
+	UInputAction* JumpCamera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
+	UInputAction* ChangeMoveSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
+	UInputAction* ChangeRotateSpeed;
 
 protected:
 	virtual void BeginPlay() override;
 
 	void OnZoomCamera(const FInputActionValue& Value);
+	void OnMaxZoomCamera(const FInputActionValue& Value);
+	void OnMinZoomCamera(const FInputActionValue& Value);
 	void OnRotateCamera(const FInputActionValue& Value);
 	void OnTurnCameraLeft(const FInputActionValue& Value);
 	void OnTurnCameraRight(const FInputActionValue& Value);
 	void OnMoveCameraYAxis(const FInputActionValue& Value);
 	void OnMoveCameraXAxis(const FInputActionValue& Value);
+	void OnChangeMoveSpeed(const FInputActionValue& Value);
+	void OnChangeRotateSpeed(const FInputActionValue& Value);
+	void OnJumpCamera(const FInputActionValue& Value);
 	void OnDragCamera(const FInputActionValue& Value);
 
 	void RequestMoveCamera(float X, float Y, float Scale);
@@ -168,6 +187,7 @@ protected:
 private:
 	void CollectComponentDependencyReferences();
 	void ConfigureSpringArm();
+	void ConfigureSpeeds();
 	void TryToFindBoundaryVolumeReference();
 	void ConditionallyEnableEdgeScrolling() const;
 	void CheckForEnhancedInputComponent() const;
@@ -182,6 +202,7 @@ private:
 
 	void FollowTargetIfSet() const;
 	void SmoothTargetArmLengthToDesiredZoom() const;
+	void ApplyCameraRotationToDesiredZoom() const;
 	void ConditionallyKeepCameraAtDesiredZoomAboveGround();
 	void ConditionallyApplyCameraBounds() const;
 
@@ -199,4 +220,10 @@ private:
 	FVector2D DragStartLocation;
 	UPROPERTY()
 	TArray<FMoveCameraCommand> MoveCameraCommands;
+	UPROPERTY()
+	float ZoomRatio;
+	UPROPERTY()
+	float MoveSpeed;
+	UPROPERTY()
+	float RotateSpeed;
 };
