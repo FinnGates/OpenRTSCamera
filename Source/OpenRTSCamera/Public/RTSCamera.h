@@ -33,12 +33,6 @@ class OPENRTSCAMERA_API URTSCamera : public UActorComponent
 public:
 	URTSCamera();
 
-	virtual void TickComponent(
-		float DeltaTime,
-		ELevelTick TickType,
-		FActorComponentTickFunction* ThisTickFunction
-	) override;
-
 	UFUNCTION(BlueprintCallable, Category = "RTSCamera")
 	void FollowTarget(AActor* Target);
 
@@ -47,6 +41,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RTSCamera")
 	void SetActiveCamera() const;
+
+protected:
+	virtual void TickComponent(
+		float DeltaTime,
+		ELevelTick TickType,
+		FActorComponentTickFunction* ThisTickFunction
+	) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "RTSCamera")
 	void JumpTo(FVector Position) const;
@@ -150,7 +151,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Inputs")
 	UInputAction* ChangeRotateSpeed;
 
-protected:
 	virtual void BeginPlay() override;
 
 	void OnZoomCamera(const FInputActionValue& Value);

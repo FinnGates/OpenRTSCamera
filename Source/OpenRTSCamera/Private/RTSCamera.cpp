@@ -201,7 +201,7 @@ void URTSCamera::OnDragCamera(const FInputActionValue& Value)
 void URTSCamera::OnJumpCamera(const FInputActionValue& Value)
 {
 	FHitResult HitResult;
-	if (PlayerController->GetHitResultUnderCursor(ECC_WorldStatic, true, HitResult))
+	if (PlayerController->GetHitResultUnderCursor(CollisionChannel, true, HitResult))
 	{
 		JumpTo(HitResult.ImpactPoint);
 	}
@@ -335,11 +335,7 @@ void URTSCamera::CheckForEnhancedInputComponent() const
 void URTSCamera::BindInputMappingContext() const
 {
 	PlayerController->bShowMouseCursor = true;
-	const auto Subsystem = this
-	                       ->PlayerController
-	                       ->GetLocalPlayer()
-	                       ->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	Subsystem->ClearAllMappings();
+	const auto Subsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	Subsystem->AddMappingContext(InputMappingContext, 0);
 }
 
@@ -476,7 +472,7 @@ void URTSCamera::EdgeScrollLeft() const
 			FVector(
 				WorldRotation.Euler().X,
 				WorldRotation.Euler().Y,
-				WorldRotation.Euler().Z - Movement * RotateSpeed * DeltaSeconds
+				WorldRotation.Euler().Z + Movement * RotateSpeed * DeltaSeconds
 			)
 		)
 	);
@@ -500,7 +496,7 @@ void URTSCamera::EdgeScrollRight() const
 			FVector(
 				WorldRotation.Euler().X,
 				WorldRotation.Euler().Y,
-				WorldRotation.Euler().Z + Movement * RotateSpeed * DeltaSeconds
+				WorldRotation.Euler().Z - Movement * RotateSpeed * DeltaSeconds
 			)
 		)
 	);
