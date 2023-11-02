@@ -219,22 +219,28 @@ void URTSCamera::OnChangeRotateSpeed(const FInputActionValue& Value)
 	RotateSpeed = FMath::Clamp(RotateSpeed + DeltaRotateSpeed, MinimumRotateSpeed, MaximumRotateSpeed);
 }
 
-void URTSCamera::RequestMoveCamera(const float X, const float Y, const float Scale)
+void URTSCamera::RequestMoveCamera(const float X, const float Y, const float Scale, const bool bTeleport)
 {
+	UnFollowTarget();
+	
 	FMoveCameraCommand MoveCameraCommand;
 	MoveCameraCommand.X = X;
 	MoveCameraCommand.Y = Y;
 	MoveCameraCommand.Scale = Scale;
+	MoveCameraCommand.bTeleport = bTeleport;
 	MoveCameraCommands.Push(MoveCameraCommand);
 }
 
 void URTSCamera::ApplyMoveCameraCommands()
 {
-	for (const auto& [X, Y, Scale] : MoveCameraCommands)
+	for (const auto& [X, Y, Scale, bTeleport] : MoveCameraCommands)
 	{
 		auto Movement = FVector2D(X, Y);
-		Movement.Normalize();
-		Movement *= MoveSpeed * Scale * DeltaSeconds * FMath::Clamp(ZoomRatio, MinimumZoomedSpeed, ZoomRatio);
+		if (!bTeleport)
+		{
+			Movement.Normalize();
+			Movement *= MoveSpeed * Scale * DeltaSeconds * FMath::Clamp(ZoomRatio, MinimumZoomedSpeed, ZoomRatio);
+		}
 		Root->SetWorldLocation(
 			Root->GetComponentLocation() + FVector(Movement.X, Movement.Y, 0.0f)
 		);
@@ -434,9 +440,10 @@ void URTSCamera::SetActiveCamera() const
 	PlayerController->SetViewTarget(GetOwner());
 }
 
-void URTSCamera::JumpTo(const FVector Position) const
+void URTSCamera::JumpTo(const FVector Position) 
 {
-	Root->SetWorldLocation(Position);
+	const FVector Diff = (Position - Root->GetComponentLocation());
+	RequestMoveCamera(Diff.X, Diff.Y, 1, true);
 }
 
 void URTSCamera::ConditionallyPerformEdgeScrolling() const

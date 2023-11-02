@@ -23,6 +23,8 @@ struct FMoveCameraCommand
 	float Y;
 	UPROPERTY()
 	float Scale;
+	UPROPERTY()
+	bool bTeleport = false;
 };
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -50,7 +52,7 @@ protected:
 	) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "RTSCamera")
-	void JumpTo(FVector Position) const;
+	void JumpTo(FVector Position);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTSCamera - Zoom Settings")
 	float MinimumZoomLength;
@@ -166,7 +168,7 @@ protected:
 	void OnJumpCamera(const FInputActionValue& Value);
 	void OnDragCamera(const FInputActionValue& Value);
 
-	void RequestMoveCamera(float X, float Y, float Scale);
+	void RequestMoveCamera(float X, float Y, float Scale, const bool bTeleport = false);
 	void ApplyMoveCameraCommands();
 
 	UPROPERTY()
