@@ -666,8 +666,8 @@ void URTSCamera::ConditionallyApplyCameraBounds() const
 		BoundaryVolume->GetActorBounds(false, Origin, Extents);
 		Root->SetWorldLocation(
 			FVector(
-				UKismetMathLibrary::Clamp(RootWorldLocation.X, Origin.X - Extents.X, Origin.X + Extents.X),
-				UKismetMathLibrary::Clamp(RootWorldLocation.Y, Origin.Y - Extents.Y, Origin.Y + Extents.Y),
+				UKismetMathLibrary::Clamp(RootWorldLocation.X, Origin.X - (Extents.X/2), Origin.X + (Extents.X/2)),
+				UKismetMathLibrary::Clamp(RootWorldLocation.Y, Origin.Y - (Extents.Y/2), Origin.Y + (Extents.Y/2)),
 				RootWorldLocation.Z
 			)
 		);
