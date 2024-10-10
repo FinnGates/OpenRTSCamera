@@ -1,4 +1,4 @@
-// Copyright Finn Gates. All Rights Reserved.
+// Copyright 2024 Bright Helm Studios Ltd All Rights Reserved.
 
 #pragma once
 
