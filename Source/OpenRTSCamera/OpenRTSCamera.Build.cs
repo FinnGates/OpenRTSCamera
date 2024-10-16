@@ -35,7 +35,7 @@ public class OpenRTSCamera : ModuleRules
 				"EnhancedInput",
 				"Slate",
 				"SlateCore",
-				"UMG"
+				"UMG", "Niagara"
 			}
 		);
 

@@ -35,7 +35,10 @@ URTSCamera::URTSCamera()
 void URTSCamera::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void URTSCamera::SetupRTSComponent()
+{
 	const auto NetMode = GetNetMode();
 	if (NetMode != NM_DedicatedServer)
 	{

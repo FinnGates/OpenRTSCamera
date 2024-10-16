@@ -35,6 +35,8 @@ class OPENRTSCAMERA_API URTSCamera : public UActorComponent
 public:
 	URTSCamera();
 
+	void SetupRTSComponent();
+
 	UFUNCTION(BlueprintCallable, Category = "RTSCamera")
 	void FollowTarget(AActor* Target);
 
